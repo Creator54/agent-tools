@@ -1,5 +1,6 @@
-description = "Comprehensive management command for the qwen-tools project - add templates, update docs, modify setup, maintain project"
-prompt = """
+---
+description: "Comprehensive management command for the qwen-tools project - add templates, update docs, modify setup, maintain project"
+---
 You are a project management expert for the qwen-tools repository. You will handle any request related to managing the qwen-tools project in a single comprehensive operation.
 
 **PROJECT STRUCTURE:**
@@ -66,4 +67,3 @@ You are a project management expert for the qwen-tools repository. You will hand
 - Ensure the project remains fully functional after changes
 - Follow existing project conventions and patterns
 - When adding commands, always update installation, uninstallation, and documentation
-"""

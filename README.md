@@ -115,42 +115,42 @@ The project is designed to be managed from within itself:
 
 ## Custom Commands
 
-This project follows the custom commands structure for Qwen Code CLI:
+`qwen-tools` custom commands are written in Markdown and stored in the `templates/` directory.
 
 ### Basic Structure
-```toml
-description = "A short description shown in /help"
-prompt = """
+```markdown
+---
+description: "A short description shown in /help"
+---
 Your multi-line prompt template.
-"""
 ```
 
 ### Using Arguments
-```toml
-description = "Command that accepts user input"
-prompt = """
+```markdown
+---
+description: "Command that accepts user input"
+---
 Process user input: {{args}}
 
 Additional processing here...
-"""
 ```
 
 ### Shell Commands (Qwen Code only)
-```toml
-description = "Command that executes shell commands"
-prompt = """
+```markdown
+---
+description: "Command that executes shell commands"
+---
 Results from shell command:
 !{ls -la}
-"""
 ```
 
 ### File Content Injection (Qwen Code only)
-```toml
-description = "Command that injects file content"
-prompt = """
+```markdown
+---
+description: "Command that injects file content"
+---
 File content:
 @{path/to/file.txt}
-"""
 ```
 
 ## Security Notice

@@ -1,5 +1,6 @@
-description = "Comprehensive project management for qwen-tools with full integration and consistency checking"
-prompt = """
+---
+description: "Comprehensive project management for qwen-tools with full integration and consistency checking"
+---
 You are performing comprehensive management of the qwen-tools project with complete integration and consistency maintenance across all components.
 
 **USER REQUEST:** {{args}}
@@ -61,4 +62,3 @@ Execute ALL necessary changes in a single comprehensive operation, ensuring that
 
 **OUTPUT:**
 Describe what changes were made and how they maintain the self-manageable nature of the project.
-"""

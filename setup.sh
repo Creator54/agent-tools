@@ -118,7 +118,7 @@ install_commands() {
     local template_path
     template_path=$(get_template_path "$template_file")
     if [[ -f "$template_path" ]]; then
-      local description=$(grep -m1 '^description\s*=' "$template_path" | sed -E 's/.*=\s*"(.*)"/\1/' | sed -E "s/.*=\s*'(.*)'/\1/")
+      local description=$(grep -m1 '^description\s*:\s*' "$template_path" | sed -E 's/.*:\s*"(.*)"/\1/' | sed -E "s/.*:\s*'(.*)'/\1/")
       echo -e "  ${BOLD}/${command_name}${NC} - ${DIM}${description}${NC}"
     fi
   done < <(get_commands)

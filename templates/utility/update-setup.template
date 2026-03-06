@@ -1,5 +1,6 @@
-description = "Update the setup script with new functionality, ensuring complete integration and consistency"
-prompt = """
+---
+description: "Update the setup script with new functionality, ensuring complete integration and consistency"
+---
 You are updating the setup.sh script for the qwen-tools project with comprehensive integration that ensures all components work together properly.
 
 **USER REQUEST:** {{args}}
@@ -51,4 +52,3 @@ You are updating the setup.sh script for the qwen-tools project with comprehensi
 
 **EXECUTION:**
 Apply all changes in a single update to ensure the setup script remains fully functional and consistent with project standards.
-"""

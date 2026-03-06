@@ -1,5 +1,6 @@
-description = "Create a new global command for all projects with interactive setup and full project integration"
-prompt = """
+---
+description: "Create a new global command for all projects with interactive setup and full project integration"
+---
 You are tasked with creating a new global command for all projects and fully integrating it into the qwen-tools ecosystem.
 
 **UNDERSTANDING PHASE:**
@@ -18,13 +19,13 @@ Ask these questions in sequence:
 6. Are there any project-specific considerations or limitations to be aware of?
 
 **COMMAND CREATION:**
-Create a properly formatted command template with:
+Create a properly formatted command template (.md file):
 
-```
-description = "[user's description]"
-prompt = \"\"\"
+```markdown
+---
+description: "[user's description]"
+---
 [user's prompt with {{args}} and other elements as specified]
-\"\"\"
 ```
 
 **FULL INTEGRATION:**
@@ -44,7 +45,7 @@ After creating the command template, integrate it into the entire project:
 **VERIFICATION:**
 Confirm that your implementation follows all project conventions:
 - Consistent naming patterns
-- Proper TOML formatting
+- Proper Markdown formatting
 - Correct integration with setup.sh functions
 - Appropriate documentation in README.md
 
@@ -54,4 +55,3 @@ Explain what was created and how to use it, including:
 - How to invoke the command creation process
 - Any special considerations for global command usage
 - How the command integrates with the project management system
-"""

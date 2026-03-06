@@ -9,7 +9,7 @@ install_command() {
     local command_name="$2"
     
     if validate_template_file "$template_path"; then
-        cp "$template_path" "$GLOBAL_COMMANDS_DIR/${command_name}.toml"
+        cp "$template_path" "$GLOBAL_COMMANDS_DIR/${command_name}.md"
         print_success "Installed /${command_name}"
     else
         print_error "Validation failed for /${command_name}"
@@ -20,8 +20,9 @@ install_command() {
 uninstall_command() {
     local command_name="$1"
     
-    if [[ -f "$GLOBAL_COMMANDS_DIR/${command_name}.toml" ]]; then
-        rm "$GLOBAL_COMMANDS_DIR/${command_name}.toml"
+    # Clean up both markdown and legacy TOML configurations
+    if [[ -f "$GLOBAL_COMMANDS_DIR/${command_name}.md" || -f "$GLOBAL_COMMANDS_DIR/${command_name}.toml" ]]; then
+        rm -f "$GLOBAL_COMMANDS_DIR/${command_name}.md" "$GLOBAL_COMMANDS_DIR/${command_name}.toml"
         print_success "Uninstalled /${command_name}"
     else
         print_info "Not found: /${command_name}"
@@ -36,9 +37,10 @@ validate_template_file() {
         return 1
     fi
 
-    # Check if it's a valid TOML format (basic validation)
-    if ! grep -q '^description\s*=' "$file" || ! grep -q '^prompt\s*=' "$file"; then
-        print_error "Template file is not in valid format: $file"
+    # Check if it's a valid Markdown format with YAML frontmatter
+    # We expect `---` block containing `description:`
+    if ! grep -q "^---" "$file" || ! grep -q "^description:" "$file"; then
+        print_error "Template file is not in valid Markdown format: $file"
         return 1
     fi
 

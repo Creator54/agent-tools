@@ -1,5 +1,6 @@
-description = "Add a new template to the qwen-tools project with full integration"
-prompt = """
+---
+description: "Add a new template to the qwen-tools project with full integration"
+---
 You are adding a new template to the qwen-tools project with complete integration. This involves creating the template file and automatically updating all related project components.
 
 **USER REQUEST:** {{args}}
@@ -55,4 +56,3 @@ Then create the complete integration:
 - Check that documentation is clear and helpful
 
 Perform all these changes in a single execution to maintain project consistency.
-"""

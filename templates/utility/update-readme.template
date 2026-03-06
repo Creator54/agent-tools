@@ -1,5 +1,6 @@
-description = "Update the README documentation with new features or changes, maintaining consistency across the project"
-prompt = """
+---
+description: "Update the README documentation with new features or changes, maintaining consistency across the project"
+---
 You are updating the README.md file for the qwen-tools project with a comprehensive approach that maintains consistency across all project documentation.
 
 **USER REQUEST:** {{args}}
@@ -48,4 +49,3 @@ You are updating the README.md file for the qwen-tools project with a comprehens
 
 **EXECUTION:**
 Apply all changes in a single update to maintain document integrity, ensuring the README accurately reflects the current state of the qwen-tools project.
-"""

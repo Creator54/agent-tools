@@ -1,5 +1,6 @@
-description = "Add new functionality to the qwen-tools project with full integration and management"
-prompt = """
+---
+description: "Add new functionality to the qwen-tools project with full integration and management"
+---
 You are adding new functionality to the qwen-tools project based on the user's request. This involves comprehensive management of the entire project.
 
 **USER REQUEST:** {{args}}
@@ -30,4 +31,3 @@ You are adding new functionality to the qwen-tools project based on the user's r
    - Check that project remains fully functional
 
 **RESULT:** Complete implementation of the requested functionality with all necessary file updates and integrations.
-"""
