@@ -22,8 +22,17 @@ parse_args() {
       --all)
         TARGETS+=("qwen" "claude" "gemini" "opencode" "aider")
         ;;
+      --project-commands) INSTALL_PROJECT_COMMANDS="true" ;;
+      --uninstall-project-commands) UNINSTALL_PROJECT_COMMANDS="true" ;;
       -h|--help) CMD_ARGS="$1"; shift; break ;;
-      *) break ;;
+      install|uninstall)
+        if [[ -z "$CMD_ARGS" ]]; then
+          CMD_ARGS="$1"
+        fi
+        ;;
+      *)
+        break
+        ;;
     esac
     shift
   done
@@ -32,10 +41,7 @@ parse_args() {
     TARGETS=("qwen")
   fi
   export TARGETS
-  # if not explicitly set to help, capture the rest
-  if [[ "$CMD_ARGS" != "-h" && "$CMD_ARGS" != "--help" ]]; then
-      CMD_ARGS="$@"
-  fi
+  CMD_ARGS="$CMD_ARGS $@"
 }
 
 detect_mode() {
@@ -68,7 +74,8 @@ fetch_remote_files() {
     "lib/utils.sh"
     "lib/installer.sh"
     "lib/registry.sh"
-    "commands.json"
+    "commands.json.global"
+    "commands.json.project"
     "templates/management/add-command.template"
     "templates/management/main-management.template"
     "templates/utility/add-template.template"
@@ -93,13 +100,17 @@ fetch_remote_files() {
   # Set these before sourcing config.sh so its defaults are skipped
   PROJECT_ROOT="$TEMP_DIR"
   TEMPLATES_DIR="$TEMP_DIR/templates"
-  COMMANDS_REGISTRY="$TEMP_DIR/commands.json"
+  COMMANDS_REGISTRY="$TEMP_DIR/commands.json.project"
+  COMMANDS_REGISTRY_GLOBAL="$TEMP_DIR/commands.json.global"
 }
 
 setup_local_mode() {
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   LIB_DIR="$SCRIPT_DIR/lib"
   PROJECT_ROOT="$SCRIPT_DIR"
+  TEMPLATES_DIR="$SCRIPT_DIR/templates"
+  COMMANDS_REGISTRY="$SCRIPT_DIR/commands.json.project"
+  COMMANDS_REGISTRY_GLOBAL="$SCRIPT_DIR/commands.json.global"
 }
 
 source_libs() {
@@ -119,17 +130,41 @@ install_commands() {
     ensure_global_commands_dir
     print_status "Target: $target (${GLOBAL_COMMANDS_DIR})"
 
+    # Always install global commands first
     while IFS='|' read -r command_name template_file; do
       local template_path
       template_path=$(get_template_path "$template_file")
       install_command "$template_path" "$command_name"
-    done < <(get_commands)
+    done < <(get_commands "$COMMANDS_REGISTRY_GLOBAL")
+
+    # Install project-specific commands if requested
+    if [[ "$INSTALL_PROJECT_COMMANDS" == "true" ]]; then
+      # In local mode, copy from .qwen/commands/ directory
+      if [[ "$MODE" == "local" && -d "$PROJECT_ROOT/.qwen/commands" ]]; then
+        for cmd_file in "$PROJECT_ROOT/.qwen/commands"/*.md; do
+          if [[ -f "$cmd_file" ]]; then
+            cp "$cmd_file" "$GLOBAL_COMMANDS_DIR/"
+            cmd_name=$(basename "$cmd_file" .md)
+            print_success "Installed /${cmd_name} (project command)"
+          fi
+        done
+      else
+        # Remote mode: install from templates
+        while IFS='|' read -r command_name template_file; do
+          local template_path
+          template_path=$(get_template_path "$template_file")
+          install_command "$template_path" "$command_name"
+        done < <(get_commands "$COMMANDS_REGISTRY")
+      fi
+    fi
   done
 
   echo
   print_success "Command installation complete!"
   echo
   print_status "Available commands:"
+
+  # List global commands
   while IFS='|' read -r command_name template_file; do
     local template_path
     template_path=$(get_template_path "$template_file")
@@ -137,9 +172,34 @@ install_commands() {
       local description=$(grep -m1 '^description\s*:\s*' "$template_path" | sed -E 's/.*:\s*"(.*)"/\1/' | sed -E "s/.*:\s*'(.*)'/\1/")
       echo -e "  ${BOLD}/${command_name}${NC} - ${DIM}${description}${NC}"
     fi
-  done < <(get_commands)
+  done < <(get_commands "$COMMANDS_REGISTRY_GLOBAL")
+
+  # List project-specific commands if installed
+  if [[ "$INSTALL_PROJECT_COMMANDS" == "true" ]]; then
+    if [[ "$MODE" == "local" && -d "$PROJECT_ROOT/.qwen/commands" ]]; then
+      for cmd_file in "$PROJECT_ROOT/.qwen/commands"/*.md; do
+        if [[ -f "$cmd_file" ]]; then
+          cmd_name=$(basename "$cmd_file" .md)
+          echo -e "  ${BOLD}/${cmd_name}${NC} - ${DIM}Project management command${NC}"
+        fi
+      done
+    else
+      while IFS='|' read -r command_name template_file; do
+        local template_path
+        template_path=$(get_template_path "$template_file")
+        if [[ -f "$template_path" ]]; then
+          local description=$(grep -m1 '^description\s*:\s*' "$template_path" | sed -E 's/.*:\s*"(.*)"/\1/' | sed -E "s/.*:\s*'(.*)'/\1/")
+          echo -e "  ${BOLD}/${command_name}${NC} - ${DIM}${description}${NC}"
+        fi
+      done < <(get_commands "$COMMANDS_REGISTRY")
+    fi
+  fi
+
   echo
-  print_status "The primary command for managing the agent-tools project is ${BOLD}/add${NC}"
+  if [[ "$INSTALL_PROJECT_COMMANDS" != "true" ]]; then
+    print_status "Note: Project-specific commands (e.g., /manage-project, /add) are not installed."
+    print_status "Run with --project-commands to install all commands."
+  fi
 }
 
 uninstall_commands() {
@@ -151,9 +211,17 @@ uninstall_commands() {
     set_target_paths "$target"
     print_status "Uninstalling target: $target (${GLOBAL_COMMANDS_DIR})"
 
+    # Always uninstall global commands
     while IFS='|' read -r command_name _; do
       uninstall_command "$command_name"
-    done < <(get_commands)
+    done < <(get_commands "$COMMANDS_REGISTRY_GLOBAL")
+
+    # Uninstall project-specific commands if requested
+    if [[ "$UNINSTALL_PROJECT_COMMANDS" == "true" ]]; then
+      while IFS='|' read -r command_name _; do
+        uninstall_command "$command_name"
+      done < <(get_commands "$COMMANDS_REGISTRY")
+    fi
 
     if [[ -d "$GLOBAL_COMMANDS_DIR" ]] && [[ -z "$(ls -A "$GLOBAL_COMMANDS_DIR")" ]]; then
       rmdir "$GLOBAL_COMMANDS_DIR" 2>/dev/null || true
@@ -176,6 +244,10 @@ main() {
   fi
 
   source_libs
+
+  # Trim leading/trailing whitespace from CMD_ARGS
+  CMD_ARGS="${CMD_ARGS#"${CMD_ARGS%%[![:space:]]*}"}"
+  CMD_ARGS="${CMD_ARGS%"${CMD_ARGS##*[![:space:]]}"}"
 
   case "${CMD_ARGS:-help}" in
     "install")

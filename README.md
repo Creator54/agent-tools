@@ -11,11 +11,9 @@ curl -fsSL https://raw.githubusercontent.com/Creator54/agent-tools/main/setup.sh
 
 **Local Repository:**
 ```bash
-# If you cloned agent-tools locally
-bash setup.sh install                   # Installs for Qwen (default)
-bash setup.sh --claude install          # Installs for Claude Code
-bash setup.sh --all install             # Installs for all supported tools
-bash setup.sh uninstall                 # Uninstalls from Qwen
+bash setup.sh install                   # Global commands only (default)
+bash setup.sh install --project-commands  # Include project-specific commands
+bash setup.sh uninstall                 # Uninstall from Qwen
 ```
 
 **Supported AI Agents:**
@@ -31,18 +29,23 @@ bash setup.sh uninstall                 # Uninstalls from Qwen
 
 ## Available Commands
 
-Once installed, the following commands become available globally across your AI agent interfaces:
+**Global Commands** (installed by default):
 
 | Command | Description |
 |---|---|
-| `/add` | **(Primary)** Add new functionality or commands to the `agent-tools` project. |
-| `/main-management` | Comprehensive management (add templates, update docs, modify setup). |
-| `/add-template` | Barebones command to add a new template with automatic integration. |
-| `/update-readme` | Update this documentation with new features or changes. |
-| `/update-setup` | Modify the installation script with new functionality. |
-| `/manage-project` | High-level project management and consistency checking. |
-| `/create-command-local` | Interactive tool to create project-specific commands. |
-| `/create-command-global`| Interactive tool to create global commands for all projects. |
+| `/create-command-local` | Create project-specific commands. |
+| `/create-command-global`| Create global commands for all projects. |
+
+**Project Commands** (`--project-commands`):
+
+| Command | Description |
+|---|---|
+| `/add` | Add new functionality to agent-tools. |
+| `/main-management` | Full project management. |
+| `/add-template` | Add a new template. |
+| `/update-readme` | Update documentation. |
+| `/update-setup` | Modify setup script. |
+| `/manage-project` | Project consistency checking. |
 
 ## Creating Custom Commands
 

@@ -29,16 +29,6 @@
       "name": "manage-project",
       "template": "utility/manage-project.template",
       "description": "Comprehensive project management for agent-tools with full integration and consistency checking"
-    },
-    {
-      "name": "create-command-local",
-      "template": "creation/create-command-local.template",
-      "description": "Create a new local command for the current project with interactive setup and full project integration"
-    },
-    {
-      "name": "create-command-global",
-      "template": "creation/create-command-global.template",
-      "description": "Create a new global command for all projects with interactive setup and full project integration"
     }
   ]
 }

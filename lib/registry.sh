@@ -5,15 +5,17 @@
 
 # Function to get command list from registry
 get_commands() {
+    local registry_file="${1:-$COMMANDS_REGISTRY}"
+    
     if command -v jq >/dev/null 2>&1; then
         # Use jq if available for proper JSON parsing
-        jq -r '.commands[] | "\(.name)|\(.template)"' "$COMMANDS_REGISTRY" 2>/dev/null || {
+        jq -r '.commands[] | "\(.name)|\(.template)"' "$registry_file" 2>/dev/null || {
             echo "Error: Cannot parse commands registry"
             exit 1
         }
     else
         # Fallback to sed/awk if jq is not available (less robust but more portable)
-        grep -o '"name": "[^"]*", "template": "[^"]*"' "$COMMANDS_REGISTRY" | \
+        grep -o '"name": "[^"]*", "template": "[^"]*"' "$registry_file" | \
         sed -E 's/.*"name": "([^"]+)", "template": "([^"]+)".*/\1|\2/' || {
             echo "Error: Cannot parse commands registry"
             exit 1
