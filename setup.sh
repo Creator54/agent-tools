@@ -52,7 +52,7 @@ detect_mode() {
     else
       # It's a real file, verify it's inside a full clone
       SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-      if [[ -f "$SCRIPT_DIR/commands.json" && -d "$SCRIPT_DIR/lib" && -d "$SCRIPT_DIR/templates" ]]; then
+      if [[ -f "$SCRIPT_DIR/commands.json.global" && -d "$SCRIPT_DIR/lib" && -d "$SCRIPT_DIR/templates" ]]; then
         MODE="local"
       else
         # Standalone downloaded setup script
