@@ -10,9 +10,9 @@ install_command() {
     
     if validate_template_file "$template_path"; then
         cp "$template_path" "$GLOBAL_COMMANDS_DIR/${command_name}.toml"
-        print_success "Installed /${command_name} command (global)"
+        print_success "Installed /${command_name}"
     else
-        print_error "Failed to install /${command_name} command due to template validation error"
+        print_error "Validation failed for /${command_name}"
     fi
 }
 
@@ -22,9 +22,9 @@ uninstall_command() {
     
     if [[ -f "$GLOBAL_COMMANDS_DIR/${command_name}.toml" ]]; then
         rm "$GLOBAL_COMMANDS_DIR/${command_name}.toml"
-        print_success "Uninstalled /${command_name} command"
+        print_success "Uninstalled /${command_name}"
     else
-        print_warning "Command file not found: $GLOBAL_COMMANDS_DIR/${command_name}.toml"
+        print_info "Not found: /${command_name}"
     fi
 }
 

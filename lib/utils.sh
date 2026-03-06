@@ -4,46 +4,59 @@
 # Contains common utility functions
 
 print_header() {
-    echo -e "${BLUE}================================${NC}"
-    echo -e "${BLUE}Qwen Enhancement Tools Setup${NC}"
-    echo -e "${BLUE}================================${NC}"
+    local bg="  "
+    echo
+    echo -e "${BLUE}${BOLD}▶ qwen-tools Setup${NC}"
+    echo -e "${DIM}  Version 1.0.0${NC}"
     echo
 }
 
 print_status() {
-    echo -e "${BLUE}Status:${NC} $1"
+    echo -e "${BLUE}${BOLD}▶${NC} $1"
+}
+
+print_info() {
+    echo -e "${DIM}  $1${NC}"
 }
 
 print_success() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}${BOLD}✓${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}${BOLD}⚠${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}${BOLD}✗${NC} $1" >&2
 }
 
 ensure_global_commands_dir() {
-    mkdir -p "$GLOBAL_COMMANDS_DIR"
-    print_success "Ensured global commands directory exists: $GLOBAL_COMMANDS_DIR"
+    if [[ ! -d "$GLOBAL_COMMANDS_DIR" ]]; then
+        mkdir -p "$GLOBAL_COMMANDS_DIR"
+        print_info "Created global commands directory: $GLOBAL_COMMANDS_DIR"
+    fi
 }
 
 show_help() {
-    echo "Qwen Enhancement Tools Setup Script"
+    echo -e "${BOLD}qwen-tools Setup${NC}"
     echo
-    echo "Usage: $0 [command]"
+    echo -e "${DIM}USAGE:${NC}"
+    echo "  $0 [options] <command>"
     echo
-    echo "Commands:"
-    echo "  install      - Install Qwen enhancement commands"
-    echo "  uninstall    - Remove Qwen enhancement commands"
-    echo "  help         - Show this help message"
+    echo -e "${DIM}COMMANDS:${NC}"
+    echo "  install      Install qwen-tools commands"
+    echo "  uninstall    Remove qwen-tools commands"
+    echo "  help         Show this help message"
     echo
-    echo "Examples:"
-    echo "  $0 install                  # Install Qwen enhancement commands"
-    echo "  $0 uninstall                # Remove Qwen enhancement commands"
-    echo "  $0 help                     # Show this help message"
+    echo -e "${DIM}OPTIONS:${NC}"
+    echo "  --local      Force local mode (uses files from current directory)"
+    echo "  --remote     Force remote mode (fetches files from GitHub)"
+    echo "  -h, --help   Show this help message"
+    echo
+    echo -e "${DIM}EXAMPLES:${NC}"
+    echo "  $0 install                  # Auto-detect mode and install"
+    echo "  curl -fsSL <url> | bash -s -- install  # Remote install"
+    echo "  $0 uninstall                # Remove commands"
     echo
 }
