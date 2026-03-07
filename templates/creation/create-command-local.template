@@ -15,8 +15,10 @@ Ask these questions in sequence:
 2. What is the description for your command? (20-60 characters for /help display)
 3. What is the prompt template for your command? (multi-line, can include {{args}} for arguments)
 4. Does your command need to use arguments? If so, how should {{args}} be used in the prompt?
-5. Should this command be available globally (all projects) or local (current project only)?
-6. Does your command need to execute shell commands (e.g., `!{command}`) or access files (e.g., `@{filepath}`)?
+5. Which AI agent(s) should this command work with? (Options: qwen, claude, gemini, opencode, aider, all - default: all)
+   - This determines which agents can execute this command
+6. Should this command be available globally (all projects) or local (current project only)?
+7. Does your command need to execute shell commands (e.g., `!{command}`) or access files (e.g., `@{filepath}`)?
 
 **COMMAND CREATION:**
 Create a properly formatted command template (.md file):
@@ -24,6 +26,7 @@ Create a properly formatted command template (.md file):
 ```markdown
 ---
 description: "[user's description]"
+agents: [list of selected agents, e.g., ["qwen", "claude"] or ["all"]]
 ---
 [user's prompt with {{args}} and other elements as specified]
 ```
@@ -32,20 +35,29 @@ description: "[user's description]"
 After creating the command template, integrate it into the entire project:
 
 1. **Save the template:** Store in ~/agent-tools/templates/[command-name].template
-2. **Update setup script:** Add installation and uninstallation support in setup.sh
-3. **Update documentation:** Add to README.md in appropriate section
-4. **Verify consistency:** Ensure naming conventions match throughout
+2. **Install to agent directories:** For each selected agent, copy the command to their command directory:
+   - qwen: ~/.qwen/commands/
+   - claude: ~/.claude/commands/
+   - gemini: ~/.gemini/commands/
+   - opencode: ~/.config/opencode/commands/
+   - aider: ~/.aider/commands/
+3. **Update setup script:** Add installation and uninstallation support in setup.sh for each agent
+4. **Update documentation:** Add to README.md in appropriate section
+5. **Verify consistency:** Ensure naming conventions match throughout
 
 **SPECIAL HANDLING:**
+- Note which agents support this command based on user's selection
 - For commands that need shell access, warn the user about security considerations
 - For commands that access files, explain relative path conventions
+- Consider agent-specific syntax differences (some agents may handle {{args}} differently)
 - Suggest best practices relevant to the command type
 
 **VERIFICATION:**
 Confirm that your implementation follows all project conventions:
 - Consistent naming patterns
-- Proper Markdown formatting
-- Correct integration with setup.sh functions
+- Proper Markdown formatting with agents field in frontmatter
+- Correct installation to all selected agent directories
+- Correct integration with setup.sh functions for each agent
 - Appropriate documentation in README.md
 
 **FINAL OUTPUT:**
